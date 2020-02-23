@@ -34,7 +34,7 @@ class LoadFactOperator(BaseOperator):
       
         self.redshift_conn_id = redshift_conn_id
         self.aws_creds = aws_creds
-        self.creastesql = createsql
+        self.createsql = createsql
         self.insertsql = insertsql
         self.table = table
     
@@ -46,7 +46,7 @@ class LoadFactOperator(BaseOperator):
         rs_hook = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         self.log.info("Creating and / or deleting fact table")
         rs_hook.run(self.createsql)
-        rs_hook(delsql.format(self.table))
+        rs_hook.run(delsql.format(self.table))
         
         self.log.info("Inserting...")
         rs_hook.run(inssql.format(self.table, self.insertsql))
