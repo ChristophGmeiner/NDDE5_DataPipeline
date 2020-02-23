@@ -28,6 +28,25 @@ class StageToRedshiftOperator(BaseOperator):
                  s3_region="",
                  s3_jsondetails="",
                  *args, **kwargs):
+        '''
+        initialises the StageToRedshiftOperator, this is an operator, which 
+        transfers (json) from a S§ bucket to a Redshift datawarehouse or 
+        Postgres database
+        
+        :redshift_conn_id - Airflow conection for Postgres or Redshft 
+            connection
+        :aws_creds - Credentials stored in Airflow connections for accessing 
+            the S3 bucket
+        :createsql - String indicating the SQL statement for creating the 
+            relevant table
+        :table - relevant table name as string
+        :s3_bucket: String indicating the S3 bucket name, which contains the
+            json raw data
+        :s3_key - String indicating the file or path
+        :s3_region: String indicating the relevant S3 AWS region
+        :s3_jsondetails - String indicating additional code for json format in
+            the COPY SQL statement
+        '''
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
         # Map params here

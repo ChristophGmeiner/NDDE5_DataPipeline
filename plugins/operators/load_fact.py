@@ -14,6 +14,21 @@ class LoadFactOperator(BaseOperator):
                  insertsql="",
                  table="",
                  *args, **kwargs):
+        
+        '''
+        initialises the LoadFactOperator, this is an operator, which 
+        loads data from the database stage tables into the fact table
+        
+        :redshift_conn_id - Airflow conection for Postgres or Redshft 
+            connection
+        :aws_creds - Credentials stored in Airflow connections for accessing 
+            the S3 bucket
+        :createsql - String indicating the SQL statement for creating the 
+            relevant table
+        :insertsql - String indicating the SQL statement for inserting data  
+            into the relevant table
+        :table - relevant table name as string
+        '''
 
         super(LoadFactOperator, self).__init__(*args, **kwargs)
       
