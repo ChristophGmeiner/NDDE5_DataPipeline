@@ -35,9 +35,23 @@ As one can see in the figure above, it is the same process as in my other NDDE p
 ### /dags/udac_example_dag.py
 This is the code for the DAG containing all the workflow components.
 
-### create_tables.sql
-SQL statements for creating alle the necessary Redshift tables (stgings, fact and dim).
+### plugins/helpers/__init__.py
+Initialisation of helper modfules, i.e. SQL queries (see below).
 
-### sql_queries.py
+### plugins/helpers/sql_queries.py
 SQL statements for inserting data into Redshift tables.
+
+### plugins/helpers/create_tables.py
+SQL statements for creating and if necessray dropping Redshift tables.
+
+### plugins/operators/data_quality.py
+
+### plugins/operators/stage_redshift.py
+Operator, which stages json data stored in a S3 bucket into a Redshift datawarehouse. See docstring for details.
+
+### plugins/operators/load_fact.py
+Operator, which loads data from staging tables into a fact table. See docstring for details.
+
+### plugins/operators/load_dimension.py
+Operator, which loads data from staging tables into dimension tables. See docstring for details.
 
