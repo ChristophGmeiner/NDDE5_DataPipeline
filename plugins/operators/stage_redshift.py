@@ -54,7 +54,7 @@ class StageToRedshiftOperator(BaseOperator):
         # self.conn_id = conn_id
         self.redshift_conn_id = redshift_conn_id
         self.aws_creds = aws_creds
-        self.creastesql = createsql
+        self.createsql = createsql
         self.table = table
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
@@ -63,24 +63,25 @@ class StageToRedshiftOperator(BaseOperator):
 
     def execute(self, context):
         aws_hook = AwsHook(self.aws_creds)
-        creds = aws_hook.getcredentials()
+        creds = aws_hook.get_credentials()
         rs_hook = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         
         self.log.info("Dropping old stagings tables!")
         dropst = CreateTables.dropsql(self.table)
         rs_hook.run(dropst)
         
-        self.log.info("Creating staging table")
+        self.log.info("createsql staging table")
         rs_hook.run(self.createsql)
         
         self.log.info("Copying data from S3 to Redshift for " + self.table)
-        s3_path = "s3://" + self.bucket + "/" + self.s3_key
+        s3_path = "s3://" + self.s3_bucket + "/" + self.s3_key
         formated_sql = StageToRedshiftOperator.copy_sql.format(
                 self.table,
                 s3_path,
                 creds.access_key,
                 creds.secret_key,
-                self.s3_region)
+                self.s3_region,
+                self.s3_jsondetails)
         rs_hook.run(formated_sql)
         
         self.log.info('StageToRedshiftOperator finished!')
