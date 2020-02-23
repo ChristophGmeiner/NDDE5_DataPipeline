@@ -31,3 +31,13 @@ As one can see in the figure above, it is the same process as in my other NDDE p
 ### Details on the data quality checks
 
 ## Files and scripts
+
+### /dags/udac_example_dag.py
+This is the code for the DAG containing all the workflow components.
+
+### create_tables.sql
+SQL statements for creating alle the necessary Redshift tables (stgings, fact and dim).
+
+### sql_queries.py
+SQL statements for inserting data into Redshift tables.
+
