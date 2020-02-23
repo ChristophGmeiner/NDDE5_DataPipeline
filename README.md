@@ -24,7 +24,7 @@ All confidential information needed for connecting to AWS is stored in a local f
 
 As a first step, please see the graphic view of the Airflow dag for the data pipeline below:
 
-    ![Figure01] (/Users/christophgmeiner/Udacity/NDDE5_DataPipeline/NDDE5_Figure01.png)
+![Figure01](/Users/christophgmeiner/Udacity/NDDE5_DataPipeline/NDDE5_Figure01.png)
 
 As one can see in the figure above, it is the same process as in my other NDDE projects. First the json data (one for stongs and another one for log events) is staged into two postgres staging tables. Then the fact able is created out of the stagings tables, After that the dimension tables are built the same way. Finally some quality checks are carried out.
 
