@@ -36,13 +36,16 @@ As one can see in the figure above, it is the same process as in my other NDDE p
 This is the code for the DAG containing all the workflow components.
 
 ### plugins/helpers/__init__.py
-Initialisation of helper modfules, i.e. SQL queries (see below).
+Initialisation of helper modules, i.e. SQL queries (see below).
 
 ### plugins/helpers/sql_queries.py
 SQL statements for inserting data into Redshift tables.
 
 ### plugins/helpers/create_tables.py
 SQL statements for creating and if necessray dropping Redshift tables.
+
+### plugins/operators/__init__.py
+Initialisation of operator modules(see below).
 
 ### plugins/operators/data_quality.py
 
