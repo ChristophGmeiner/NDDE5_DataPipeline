@@ -91,7 +91,7 @@ class CreateTables:
                     )
                     """)
     
-    create_user = ("""
+    create_users = ("""
                     CREATE TABLE IF NOT EXISTS users (
                     	userid int4 NOT NULL,
                     	first_name varchar(256),
