@@ -13,6 +13,7 @@ class LoadDimensionOperator(BaseOperator):
                  createsql="",
                  insertsql="",
                  table="",
+                 append=False,
                  *args, **kwargs):
         
         '''
@@ -29,6 +30,7 @@ class LoadDimensionOperator(BaseOperator):
         :insertsql - String indicating the SQL statement for inserting data  
             into the relevant table
         :table - relevant table name as string
+        :append - indicates whether new data should be appended
         '''
 
         super(LoadDimensionOperator, self).__init__(*args, **kwargs)
@@ -38,6 +40,7 @@ class LoadDimensionOperator(BaseOperator):
         self.createsql = createsql
         self.insertsql = insertsql
         self.table = table
+        self.append = append
     
     def execute(self, context):
         
@@ -47,7 +50,9 @@ class LoadDimensionOperator(BaseOperator):
         rs_hook = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         self.log.info("Creating and / or deleting fact table")
         rs_hook.run(self.createsql)
-        rs_hook.run(delsql.format(self.table))
+        
+        if self.append == False:
+            rs_hook.run(delsql.format(self.table))
         
         self.log.info("Inserting...")
         rs_hook.run(inssql.format(self.table, self.insertsql))
