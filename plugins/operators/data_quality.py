@@ -8,15 +8,39 @@ class DataQualityOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self,
-                 # Define your operators params (with defaults) here
-                 # Example:
-                 # conn_id = your-connection-name
+                 redshift_conn_id="",
+                 table="",
+                 fact_query="",
+                 dim_query="",
                  *args, **kwargs):
+        
+        '''
+        initialises the DataQualityOperator, this is an operator, which 
+        checks the number of records between fact and dimensions tables.
+        If the unique records between two provided tables are not matching, 
+        a value error is thrown.
+        
+        :redshift_conn_id - Airflow conection for Postgres or Redshft 
+            connection
+        :table - relevant table name as string
+        :fact_query - SQL statement for counting relevant fact records
+        _dim_query - SQL statement for counting relevant fact records
+        '''
 
         super(DataQualityOperator, self).__init__(*args, **kwargs)
-        # Map params here
-        # Example:
-        # self.conn_id = conn_id
+        self.redshift_conn_id=redshift_conn_id
+        self.table=table
+        self.fact_query=fact_query
+        self.dim_query=dim_query
 
     def execute(self, context):
-        self.log.info('DataQualityOperator not implemented yet')
+        redshift_hook = PostgresHook(self.redshift_conn_id)
+        
+        fact_records = redshift_hook.get_records(self.fact_query)
+        dim_records = redshift_hook.get_records(self.dim_query.\
+                                                format(self.table))
+        
+        if fact_records != dim_records:
+            raise ValueError(f"Fact and dim records mismatch for {self.table}")
+            
+        self.log.info(f"Data Qualiyt Check for {self.table} succeeded!")
