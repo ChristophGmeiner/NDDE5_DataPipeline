@@ -39,14 +39,14 @@ class LoadFactOperator(BaseOperator):
         self.table = table
     
     def execute(self, context):
-        #basically the dekete part should be abandoned in productive mode
-        delsql = "TRUNCATE TABLE {}"
+        #basically the delete part should be abandoned in productive mode
+        #delsql = "TRUNCATE TABLE {}"
         inssql = "INSERT INTO {} {}"
         
         rs_hook = PostgresHook(postgres_conn_id=self.redshift_conn_id)
-        self.log.info("Creating and / or deleting fact table")
+        self.log.info("Creating fact table")
         rs_hook.run(self.createsql)
-        rs_hook.run(delsql.format(self.table))
+        #rs_hook.run(delsql.format(self.table))
         
         self.log.info("Inserting...")
         rs_hook.run(inssql.format(self.table, self.insertsql))
