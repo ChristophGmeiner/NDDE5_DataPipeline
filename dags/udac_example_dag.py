@@ -5,13 +5,14 @@ from airflow.operators import (StageToRedshiftOperator, LoadFactOperator,
                                 LoadDimensionOperator, DataQualityOperator)
 from helpers import SqlQueries
 from helpers import CreateTables
+from helpers import CheckQueries
 
 default_args = {
     'owner': 'udacity',
     'start_date': datetime.now() - timedelta(minutes=178),
     'catchup': False,
     'retries': 3,
-    'retry_delay': timedelta(seconds=60), #300
+    'retry_delay': timedelta(seconds=300), 
     'email_on_retry': False,
     'depends_on_past': False
     
@@ -20,7 +21,7 @@ default_args = {
 dag = DAG('udac_example_dag',
           default_args=default_args,
           description='Load and transform data in Redshift with Airflow',
-          schedule_interval="22 * * * *"
+          schedule_interval="26 * * * *"
         )
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
@@ -101,9 +102,42 @@ load_time_dimension_table = LoadDimensionOperator(
     table='"time"'
 )
 
-run_quality_checks = DataQualityOperator(
-    task_id='Run_data_quality_checks',
-    dag=dag
+startcheck_operator = DummyOperator(task_id='Begin_checks',  dag=dag)
+
+run_users_checks = DataQualityOperator(
+    task_id='Run_data_quality_checks_users',
+    dag=dag,
+    redshift_conn_id="redshift",
+    table="users",
+    fact_query=CheckQueries.useridcheck,
+    dim_query=CheckQueries.dimcheck    
+)
+
+run_songs_checks = DataQualityOperator(
+    task_id='Run_data_quality_checks_songs',
+    dag=dag,
+    redshift_conn_id="redshift",
+    table="songs",
+    fact_query=CheckQueries.songidcheck,
+    dim_query=CheckQueries.dimcheck    
+)
+
+run_artists_checks = DataQualityOperator(
+    task_id='Run_data_quality_checks_artists',
+    dag=dag,
+    redshift_conn_id="redshift",
+    table="artists",
+    fact_query=CheckQueries.artistidcheck,
+    dim_query=CheckQueries.dimcheck    
+)
+
+run_time_checks = DataQualityOperator(
+    task_id='Run_data_quality_checks_time',
+    dag=dag,
+    redshift_conn_id="redshift",
+    table='"time"',
+    fact_query=CheckQueries.starttimecheck,
+    dim_query=CheckQueries.dimcheck    
 )
 
 end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
@@ -116,8 +150,15 @@ load_songplays_table >> load_songs_dimension_table
 load_songplays_table >> load_users_dimension_table
 load_songplays_table >> load_artists_dimension_table
 load_songplays_table >> load_time_dimension_table
-load_songs_dimension_table >> run_quality_checks
-load_users_dimension_table >> run_quality_checks
-load_artists_dimension_table >> run_quality_checks
-load_time_dimension_table >> run_quality_checks
-run_quality_checks >> end_operator
+load_songs_dimension_table >> startcheck_operator
+load_users_dimension_table >> startcheck_operator
+load_artists_dimension_table >> startcheck_operator
+load_time_dimension_table >> startcheck_operator
+startcheck_operator >> run_users_checks
+startcheck_operator >> run_songs_checks
+startcheck_operator >> run_artists_checks
+startcheck_operator >> run_time_checks
+run_users_checks >> end_operator
+run_songs_checks >> end_operator
+run_artists_checks >> end_operator
+run_time_checks >> end_operator
