@@ -21,7 +21,7 @@ default_args = {
 dag = DAG('udac_example_dag',
           default_args=default_args,
           description='Load and transform data in Redshift with Airflow',
-          schedule_interval="26 * * * *"
+          schedule_interval="42 * * * *"
         )
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
@@ -69,7 +69,8 @@ load_users_dimension_table = LoadDimensionOperator(
     aws_creds="aws_credentials",
     createsql=CreateTables.create_users,
     insertsql=SqlQueries.user_table_insert,
-    table="users"
+    table="users",
+    append=False
 )
 
 load_songs_dimension_table = LoadDimensionOperator(
@@ -79,7 +80,8 @@ load_songs_dimension_table = LoadDimensionOperator(
     aws_creds="aws_credentials",
     createsql=CreateTables.create_songs,
     insertsql=SqlQueries.songs_table_insert,
-    table="songs"
+    table="songs",
+    append=False
 )
 
 load_artists_dimension_table = LoadDimensionOperator(
@@ -89,7 +91,8 @@ load_artists_dimension_table = LoadDimensionOperator(
     aws_creds="aws_credentials",
     createsql=CreateTables.create_artists,
     insertsql=SqlQueries.artists_table_insert,
-    table="artists"
+    table="artists",
+    append=False
 )
 
 load_time_dimension_table = LoadDimensionOperator(
@@ -99,7 +102,8 @@ load_time_dimension_table = LoadDimensionOperator(
     aws_creds="aws_credentials",
     createsql=CreateTables.create_time,
     insertsql=SqlQueries.time_table_insert,
-    table='"time"'
+    table='"time"',
+    append=False
 )
 
 startcheck_operator = DummyOperator(task_id='Begin_checks',  dag=dag)
