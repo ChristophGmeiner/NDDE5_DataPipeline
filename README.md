@@ -6,7 +6,7 @@ Sparkify is a simulated (not-real) online music streaming service.
 
 This Git repository shows how to script the data pipeline in Airflow for loading data from json raw data (stored in an AWS S3 bucket), for creating and transfering fact and dimension tables from these files into Amazon Redshift. Basically it is a bit similar to the third NDDE project (see here: https://github.com/ChristophGmeiner/NDDE3_DataWarehouse_AWS)
 
-This is done using Python and SQL.
+This is done using Python, Airflow and PostgreSQL.
 
 The focus hereby lies solely on creating the data pipeline and not on the ETL part.
 
@@ -40,7 +40,7 @@ After this adaption the DAG looks like this:
 
 ## Files and scripts
 
-### /dags/udac_example_dag.py
+### dags/udac_example_dag.py
 This is the code for the DAG containing all the workflow components.
 
 ### plugins/helpers/__init__.py
