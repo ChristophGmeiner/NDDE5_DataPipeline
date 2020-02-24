@@ -28,6 +28,14 @@ As a first step, please see the graphic view of the Airflow dag for the data pip
 
 As one can see in the figure above, it is the same process as in my other NDDE projects. First the json data (one for stongs and another one for log events) is staged into two postgres staging tables. Then the fact able is created out of the stagings tables, After that the dimension tables are built the same way. Finally some quality checks are carried out.
 
+### Data quality checks
+
+I implemented some data checks within a custom Airflow operator. This operator (i.e. DataQualityOperator) always checks whether the record amount of unique or key records macthes between the fact / staging tables and the correspondong dimension tables.
+
+After this adaption the DAG looks like this:
+
+![](NDDE5_Figure02.png)
+
 ### Details on the data quality checks
 
 ## Files and scripts
@@ -44,10 +52,14 @@ SQL statements for inserting data into Redshift tables.
 ### plugins/helpers/create_tables.py
 SQL statements for creating and if necessray dropping Redshift tables.
 
+### plugins/helpers/check_queries.py
+SQL statements for doing data quality checks.
+
 ### plugins/operators/__init__.py
 Initialisation of operator modules(see below).
 
 ### plugins/operators/data_quality.py
+Operator, which tests whether the number of fact records (concerning a spcific dimension key) matches the corresponding numbers of records in the dimension table.
 
 ### plugins/operators/stage_redshift.py
 Operator, which stages json data stored in a S3 bucket into a Redshift datawarehouse. See docstring for details.
